@@ -9,7 +9,9 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Transform parentItem;
     private GameObject draggedItem;
     private Canvas parentCanvas;
+
     private GridCursor gridCursor;
+    private Cursor cursor;
 
     public Image inventorySlotHighlight;
     public Image inventorySlotImage;
@@ -32,6 +34,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         mainCamera = Camera.main;
         gridCursor = FindObjectOfType<GridCursor>();
+        cursor = FindObjectOfType<Cursor>();
     }
 
     private void OnEnable()
@@ -192,7 +195,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         Player.Instance.ClearCarriedItem();
         //未选时不显示光标
-        gridCursor.DisableCursor();
+        ClearCursor();
     }
 
     //高亮物品槽，设为已选状态
@@ -204,6 +207,8 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         inventoryBar.SetHighlightedInventorySlots();
 
         gridCursor.ItemUseGridRadius = itemDetails.itemUseGridRadius;
+        cursor.ItemUseRadius = itemDetails.itemUseRadius;
+        //item use grid radius > 0
         if(itemDetails.itemUseGridRadius > 0)
         {
             gridCursor.EnableCursor();
@@ -212,6 +217,17 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             gridCursor.DisableCursor();
         }
+        //item use radius > 0
+        if(itemDetails.itemUseRadius > 0)
+        {
+            cursor.EnableCursor();
+        }
+        else
+        {
+            cursor.DisableCursor();
+        }
+        //set item type
+        cursor.SelectedItemType = itemDetails.itemType;
         gridCursor.SelectedItemType = itemDetails.itemType;
 
         InventoryManager.Instance.SetSelectedInventoryItem(InventoryLocation.player, itemDetails.itemCode);
@@ -236,6 +252,9 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void ClearCursor()
     {
         gridCursor.DisableCursor();
+        cursor.DisableCursor();
+
         gridCursor.SelectedItemType = ItemType.none;
+        cursor.SelectedItemType = ItemType.none;
     }
 }

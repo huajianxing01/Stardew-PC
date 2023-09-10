@@ -11,9 +11,12 @@ public static class Settings
     public const float gridCellSize = 1f;
     public static Vector2 cursorSize = Vector2.one;
 
+    //player
+    public static float playerCenterOffset = 0.875f;
+
     //player movement
-    public const float runningSpeed = 5.333f;
-    public const float walkingSpeed = 2.666f;
+    public const float runningSpeed = 8.0f;
+    public const float walkingSpeed = 5.333f;
     public static float useToolAnimationPause = 0.25f;
     public static float afterUseToolAnimationPause = 0.2f;
     public static float liftToolAnimationPause = 0.4f;
@@ -85,6 +88,9 @@ public static class Settings
     public const string Funityre = "家具";
     public const string OtherItem = "杂物";
 
+    //收割限制
+    public const int maxCollidersToTestPerReapSwing = 15;
+    public const int maxTargetComponentsToDestroyPerReapSwing = 2;
 
     //构造函数
     static Settings()
