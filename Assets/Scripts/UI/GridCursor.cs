@@ -160,7 +160,7 @@ public class GridCursor : MonoBehaviour
                     bool foundReapable = false;
                     foreach (Item item in itemList)
                     {
-                        if(InventoryManager.Instance.GetItemDetails(item.ItemCode).itemType == ItemType.Reapable_scenary)
+                        if(InventoryManager.Instance.GetItemDetails(item.ItemCode).itemType == ItemType.Reapable_scenery)
                         {
                             foundReapable = true;
                             break;

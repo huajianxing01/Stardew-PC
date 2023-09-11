@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6797697807938227122}
   - component: {fileID: 950607157822622438}
   m_Layer: 0
-  m_Name: WildOakScenary
+  m_Name: WildOakScenery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

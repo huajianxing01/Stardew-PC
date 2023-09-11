@@ -213,7 +213,7 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
             case ItemType.Funityre:
                 itemTypeDescription = Settings.Funityre;
                 break;
-            case ItemType.Reapable_scenary:
+            case ItemType.Reapable_scenery:
                 itemTypeDescription = Settings.OtherItem;
                 break;
             default:

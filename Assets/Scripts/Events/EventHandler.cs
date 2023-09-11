@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 //声明一个Movement委托类型
 public delegate void MovementDelegate(float inputX, float inputY, bool isWalking,bool isRunning, bool isIdle, bool isCarrying,
@@ -12,6 +13,15 @@ public delegate void MovementDelegate(float inputX, float inputY, bool isWalking
 
 public static class EventHandler
 {
+    public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
+    public static void CallHarvestActionEffectEvent(Vector3 effectPosition, HarvestActionEffect harvestActionEffect)
+    {
+        if(HarvestActionEffectEvent != null)
+        {
+            HarvestActionEffectEvent(effectPosition, harvestActionEffect);
+        }
+    }
+
     public static event Action DropSelectedItemEvent;
     public static void CallDropSelectedItemEvent()
     {

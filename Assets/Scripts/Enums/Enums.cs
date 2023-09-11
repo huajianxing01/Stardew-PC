@@ -23,7 +23,7 @@ public enum ItemType
     Breaking_tool,//破碎工具
     Reaping_tool,//收割工具
     Collecting_tool,//收集工具
-    Reapable_scenary,//可收割的
+    Reapable_scenery,//可收割的
     Funityre,//家具
     none,
     count
@@ -138,4 +138,14 @@ public enum GridBoolProperty
     canPlaceFurniture,
     isPath,
     isNPCObstacle
+}
+
+public enum HarvestActionEffect
+{
+    reaping,//收割特效
+    deciduousLeavesFalling,//树叶掉落
+    pineConesFalling,//松果掉落
+    choppingTreeTrunk,//砍树桩
+    breakingStone,//碎石头
+    none
 }

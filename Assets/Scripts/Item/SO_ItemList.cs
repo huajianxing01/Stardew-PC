@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="so_ItemList",menuName ="Scriptable Objects/Item/Item List")]
 public class SO_ItemList : ScriptableObject
 {
-    //序列化一个item details类型的list，在unity中可视化
+    //序列化一个item details类型的list，在unity中可视化&可存储
     [SerializeField] public List<ItemDetails> ItemDetails;
 }

@@ -122,7 +122,7 @@ public class Cursor : MonoBehaviour
             {
                 foreach(var item in itemsList)
                 {
-                    if(InventoryManager.Instance.GetItemDetails(item.ItemCode).itemType == ItemType.Reapable_scenary)
+                    if(InventoryManager.Instance.GetItemDetails(item.ItemCode).itemType == ItemType.Reapable_scenery)
                     {
                         return true;
                     }

@@ -30,7 +30,7 @@ public class Item : MonoBehaviour
             ItemDetails itemDetails = InventoryManager.Instance.GetItemDetails(ItemCode);
             spriteRenderer.sprite = itemDetails.itemSprite;
 
-            if(itemDetails.itemType == ItemType.Reapable_scenary)
+            if(itemDetails.itemType == ItemType.Reapable_scenery)
             {
                 gameObject.AddComponent<ItemNudge>();
             }

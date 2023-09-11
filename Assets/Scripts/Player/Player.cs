@@ -60,6 +60,8 @@ public class Player : SingletonMonobehaviour<Player>
 
     private bool _playerInputIsDisabled = false;
 
+    public GameObject canyonOakTreePrefab;
+
     //_playerInputIsDisabled的属性，其他类可以通过属性获得字段的信息
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
 
@@ -116,6 +118,18 @@ public class Player : SingletonMonobehaviour<Player>
     private void FixedUpdate()
     {
         PlayerMovement();
+    }
+
+    private void OnEnable()
+    {
+        EventHandler.BeforeSceneUnloadFadeOutEvent += DisablePlayerInputAndRestMovement;
+        EventHandler.AfterSceneLoadEvent += EnablePlayerInput;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.BeforeSceneUnloadFadeOutEvent -= DisablePlayerInputAndRestMovement;
+        EventHandler.AfterSceneLoadEvent -= EnablePlayerInput;
     }
 
     private void PlayerMovement()
@@ -274,25 +288,6 @@ public class Player : SingletonMonobehaviour<Player>
         animationOverrides.ApplyCharacterCustomisationParameters(characterAttributesCustomisationList);
 
         isCarrying = false;
-    }
-
-    private void PlayerTestInput()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            //测试分钟
-            TimeManager.Instance.TestAdvanceGameMinute();
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            //测试天数
-            TimeManager.Instance.TestAdvanceGameDay();
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            //测试场景加载
-            SceneControllerManager.Instance.FadeAndLoadScene(SceneName.Scene1_Farm.ToString(), transform.position);
-        }
     }
 
     private void PlayerClickInput()
@@ -591,10 +586,12 @@ public class Player : SingletonMonobehaviour<Player>
             {
                 if (itemArray[i] != null) 
                 {
-                    if (InventoryManager.Instance.GetItemDetails(itemArray[i].ItemCode).itemType == ItemType.Reapable_scenary)
+                    if (InventoryManager.Instance.GetItemDetails(itemArray[i].ItemCode).itemType == ItemType.Reapable_scenery)
                     {
                         Vector3 effectPosition = new Vector3(itemArray[i].transform.position.x,
                             itemArray[i].transform.position.y + Settings.gridCellSize / 2, itemArray[i].transform.position.z);
+                        EventHandler.CallHarvestActionEffectEvent(effectPosition, HarvestActionEffect.reaping);
+                        
                         Destroy(itemArray[i].gameObject);
                         reapableItemCount++;
                         
@@ -615,5 +612,31 @@ public class Player : SingletonMonobehaviour<Player>
         //position对应的是原点pivot
         return new Vector3(transform.position.x,
             transform.position.y + Settings.playerCenterOffset, transform.position.z);
+    }
+
+    private void PlayerTestInput()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            //测试分钟
+            TimeManager.Instance.TestAdvanceGameMinute();
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            //测试天数
+            TimeManager.Instance.TestAdvanceGameDay();
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            //测试场景加载
+            SceneControllerManager.Instance.FadeAndLoadScene(SceneName.Scene1_Farm.ToString(), transform.position);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            //测试pool的object使用
+            GameObject tree = PoolManager.Instance.ReuseObject(canyonOakTreePrefab, mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                Input.mousePosition.y, -mainCamera.transform.position.z)), Quaternion.identity);
+            tree.SetActive(tree);
+        }
     }
 }
