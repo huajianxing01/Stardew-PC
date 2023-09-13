@@ -506,6 +506,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reapingPrefab: {fileID: 623269559773067341, guid: fac12fe3b902be74c8f5aeb41460b20e, type: 3}
+  canyonOakLeavesFallingPrefab: {fileID: 3000330738074627992, guid: f797cbea465dde747b905f6c9c2a673b, type: 3}
+  blueSpruceLeavesFallingPrefab: {fileID: 3000330738074627992, guid: 5b088c5d075d6784cbde1522241e80f4, type: 3}
+  choppingTreeTrunkPrefab: {fileID: 623269559773067341, guid: da813215da1abe24caf62892b7c580cd, type: 3}
 --- !u!4 &83378344
 Transform:
   m_ObjectHideFlags: 0
@@ -515,7 +518,7 @@ Transform:
   m_GameObject: {fileID: 83378342}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.875775, y: 1.8457378, z: 0.07082839}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2364,6 +2367,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 262512add2cd7064f8cf66dcffdc4328, type: 2}
   - {fileID: 11400000, guid: 1aa44a72ccde0b547850b91a2310d28e, type: 2}
   - {fileID: 11400000, guid: bf39058ab98e8b04f87c9aa6db4df307, type: 2}
+  - {fileID: 11400000, guid: 6b15190de4eac6544bf4210742b52b30, type: 2}
+  - {fileID: 11400000, guid: 1db00712312ce4f42b88edb1a22925a5, type: 2}
+  - {fileID: 11400000, guid: b6d3da9ab077c7b498a8d29045b9e1d0, type: 2}
+  - {fileID: 11400000, guid: 02a3ae0f1673c994591816bcdd5468fe, type: 2}
+  - {fileID: 11400000, guid: 44fb1ec98279ad04f8ac8cfd26e11425, type: 2}
+  - {fileID: 11400000, guid: 657845c71b9993c448130243fa26f5f8, type: 2}
+  - {fileID: 11400000, guid: 01e527b58ae50a74a9ce7fe4313ec6d0, type: 2}
+  - {fileID: 11400000, guid: a76baef62f0b8b341a9c26ea0117bc37, type: 2}
+  - {fileID: 11400000, guid: 40f1f5bb013c50d4ca7e549f85076436, type: 2}
+  - {fileID: 11400000, guid: 295bb4b36b92b8b4ebf2b9b6d3cedf3f, type: 2}
+  - {fileID: 11400000, guid: ede5e5ca6589b0e47a1427d2bea29118, type: 2}
+  - {fileID: 11400000, guid: 36c71d4fb1831de49bb03cae3c9add68, type: 2}
+  - {fileID: 11400000, guid: d50fb95f6eb88d348bf89be4f8518fe8, type: 2}
+  - {fileID: 11400000, guid: c6ebc07329427514eb1bedc648291008, type: 2}
+  - {fileID: 11400000, guid: 8691031716d9a784586f38604d18fc4e, type: 2}
+  - {fileID: 11400000, guid: 7fead0ef51d2b1d49ac058b4ff8b7065, type: 2}
 --- !u!1 &1202820640
 GameObject:
   m_ObjectHideFlags: 0
@@ -2613,6 +2632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2abc04408c862164f9152b3b44ecc0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  so_CropDetailsList: {fileID: 11400000, guid: 50fe5bfd7fc21b24d853439366cefd21, type: 2}
   so_GridPropertiesArray:
   - {fileID: 11400000, guid: 1d126a1f63cc6294b8d0802c527691d0, type: 2}
   - {fileID: 11400000, guid: b3b04451b5545e141a40434c5589e508, type: 2}
@@ -2673,7 +2693,7 @@ Transform:
   m_GameObject: {fileID: 1257758465}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.8582995, y: 6.0773234, z: -0.77909875}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3064,6 +3084,12 @@ MonoBehaviour:
   pool:
   - poolSize: 10
     prefab: {fileID: 623269559773067341, guid: fac12fe3b902be74c8f5aeb41460b20e, type: 3}
+  - poolSize: 5
+    prefab: {fileID: 623269559773067341, guid: da813215da1abe24caf62892b7c580cd, type: 3}
+  - poolSize: 5
+    prefab: {fileID: 3000330738074627992, guid: f797cbea465dde747b905f6c9c2a673b, type: 3}
+  - poolSize: 5
+    prefab: {fileID: 3000330738074627992, guid: 5b088c5d075d6784cbde1522241e80f4, type: 3}
   objectPoolTransform: {fileID: 1369762879}
 --- !u!4 &1369762879
 Transform:
@@ -3074,7 +3100,7 @@ Transform:
   m_GameObject: {fileID: 1369762877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.183597, y: 4.820814, z: 0.17976162}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3258,7 +3284,7 @@ Transform:
   m_GameObject: {fileID: 1488162985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.594582, y: 5.9978275, z: -0.75207335}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3463,7 +3489,7 @@ Transform:
   m_GameObject: {fileID: 1611686277}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.594582, y: 5.9978275, z: -0.75207335}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4364,6 +4390,7 @@ MonoBehaviour:
   cursorRectTransform: {fileID: 1829308421}
   greenCursorSprite: {fileID: 21300000, guid: 2e92a61802edadc4495e4d901e3a97cb, type: 3}
   redCursorSprite: {fileID: 21300000, guid: a605f55636af56b47b309a2177079511, type: 3}
+  so_cropDetailsList: {fileID: 11400000, guid: 50fe5bfd7fc21b24d853439366cefd21, type: 2}
 --- !u!225 &1959812817
 CanvasGroup:
   m_ObjectHideFlags: 0

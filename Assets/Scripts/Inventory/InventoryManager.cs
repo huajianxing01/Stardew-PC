@@ -80,7 +80,7 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
     }
 
     //Add itemµΩList¿Ô
-    public void AddItem(InventoryLocation location,Item item)
+    public void AddItem(InventoryLocation location, Item item)
     {
         int itemCode = item.ItemCode;
         List<InventoryItem> inventoryList = inventoryLists[(int)location];
@@ -95,6 +95,23 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
         else
         {
             AddItemPosition(inventoryList,itemCode);
+        }
+
+        EventHandler.CallInventoryUpdatedEvent(location, inventoryLists[(int)location]);
+    }
+
+    public void AddItem(InventoryLocation location,int itemCode)
+    {
+        List<InventoryItem> inventoryList = inventoryLists[(int)location];
+        int itemPosition = FindItemInInventory(location, itemCode);
+
+        if(itemPosition != -1)
+        {
+            AddItemPosition(inventoryList, itemCode, itemPosition);
+        }
+        else
+        {
+            AddItemPosition(inventoryList, itemCode);
         }
 
         EventHandler.CallInventoryUpdatedEvent(location, inventoryLists[(int)location]);

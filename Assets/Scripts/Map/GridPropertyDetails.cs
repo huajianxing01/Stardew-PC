@@ -11,7 +11,7 @@ public class GridPropertyDetails
     public int daysSinceDug = -1;
     public int daysSinceWatered = -1;
     public int seedItemCode = -1;
-    public int grouthDays = -1;
+    public int growthDays = -1;
     public int daysSinceLastHarvest = -1;
 
     public GridPropertyDetails()

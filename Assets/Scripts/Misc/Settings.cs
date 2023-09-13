@@ -21,6 +21,8 @@ public static class Settings
     public static float afterUseToolAnimationPause = 0.2f;
     public static float liftToolAnimationPause = 0.4f;
     public static float afterLiftToolAnimationPause = 0.4f;
+    public static float pickAnimationPause = 1f;
+    public static float afterPickAnimationPause = 0.2f;
 
     //Time system
     public const float secondsPerGameSecond = 0.012f;

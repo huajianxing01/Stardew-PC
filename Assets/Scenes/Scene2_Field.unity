@@ -1874,6 +1874,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2901727596162896512, guid: 33fc6bf6f9baa1446a438480642e436d, type: 3}
   m_PrefabInstance: {fileID: 293881875}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &300710654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 300710655}
+  m_Layer: 0
+  m_Name: Crops
+  m_TagString: CropsParentTransform
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &300710655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300710654}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &306472719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123182,3 +123213,4 @@ SceneRoots:
   - {fileID: 2057637401}
   - {fileID: 175624600}
   - {fileID: 1041330130}
+  - {fileID: 300710655}

@@ -13,6 +13,16 @@ public delegate void MovementDelegate(float inputX, float inputY, bool isWalking
 
 public static class EventHandler
 {
+    public static event Action RemoveSelectedItemFromInventoryEvent;
+    public static void CallRemoveSelectedItemFromInventoryEvent()
+    {
+        if (RemoveSelectedItemFromInventoryEvent != null)
+        {
+            RemoveSelectedItemFromInventoryEvent();
+        }
+
+    }
+
     public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
     public static void CallHarvestActionEffectEvent(Vector3 effectPosition, HarvestActionEffect harvestActionEffect)
     {

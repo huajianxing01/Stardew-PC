@@ -4,7 +4,7 @@ public class TriggerObscuringItemFader : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        ObscurantItemFolder[] obscurantItemFolders = collision.gameObject.GetComponentsInChildren<ObscurantItemFolder>();
+        ObscuringItemFader[] obscurantItemFolders = collision.gameObject.GetComponentsInChildren<ObscuringItemFader>();
         if (obscurantItemFolders.Length > 0)
         {
             for(int i = 0;i< obscurantItemFolders.Length;i++)
@@ -16,7 +16,7 @@ public class TriggerObscuringItemFader : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        ObscurantItemFolder[] obscurantItemFolders = collision.gameObject.GetComponentsInChildren<ObscurantItemFolder>();
+        ObscuringItemFader[] obscurantItemFolders = collision.gameObject.GetComponentsInChildren<ObscuringItemFader>();
         if (obscurantItemFolders.Length > 0)
         {
             for (int i = 0;i< obscurantItemFolders.Length; i++)

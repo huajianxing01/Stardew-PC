@@ -8,10 +8,11 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
 {
     private Tilemap groundDecoration1;
     private Tilemap groundDecoration2;
-
+    private Transform cropParentTransform;
     private Grid grid;
     //key是grid的坐标
     private Dictionary<string, GridPropertyDetails> gridPropertyDictionary;
+    [SerializeField] private SO_CropDetailsList so_CropDetailsList = null;
     [SerializeField] private SO_GridProperties[] so_GridPropertiesArray = null;
     [SerializeField] private Tile[] dugGround = null;
     [SerializeField] private Tile[] waterGround = null;
@@ -41,18 +42,18 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         {
             Dictionary<string, GridPropertyDetails> gridPropertyDictionary = new Dictionary<string, GridPropertyDetails>();
 
-            foreach(var gridProperty in properties.gridPropertyList)
+            foreach (var gridProperty in properties.gridPropertyList)
             {
                 GridPropertyDetails gridPropertyDetails;
                 gridPropertyDetails = GetGridPropertyDetails(gridProperty.gridCoordinate.x,
                     gridProperty.gridCoordinate.y, gridPropertyDictionary);
                 //判断dictionary中(x,y)对应的grid detail信息是否为null
-                if(gridPropertyDetails == null)
+                if (gridPropertyDetails == null)
                 {
                     gridPropertyDetails = new GridPropertyDetails();
                 }
 
-                switch(gridProperty.gridBoolProperty)
+                switch (gridProperty.gridBoolProperty)
                 {
                     case GridBoolProperty.diggable:
                         gridPropertyDetails.isDiggable = gridProperty.gridBoolValue;
@@ -79,7 +80,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
             SceneSave sceneSave = new SceneSave();
             sceneSave.gridPropertyDetailsDictionary = gridPropertyDictionary;
 
-            if(properties.SceneName.ToString() == SceneControllerManager.Instance.startingSceneName.ToString())
+            if (properties.SceneName.ToString() == SceneControllerManager.Instance.startingSceneName.ToString())
             {
                 this.gridPropertyDictionary = gridPropertyDictionary;
             }
@@ -107,7 +108,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         string key = "x" + gridX + "y" + gridY;
         GridPropertyDetails gridPropertyDetails;
 
-        if(!gridPropertyDictionary.TryGetValue(key,out gridPropertyDetails))
+        if (!gridPropertyDictionary.TryGetValue(key, out gridPropertyDetails))
         {
             return null;
         }
@@ -120,6 +121,32 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
     public GridPropertyDetails GetGridPropertyDetails(int gridX, int gridY)
     {
         return GetGridPropertyDetails(gridX, gridY, gridPropertyDictionary);
+    }
+
+    public Crop GetCropObjectAtGridLocation(GridPropertyDetails gridPropertyDetails)
+    {
+        Vector3 worldPosition = grid.GetCellCenterWorld(new Vector3Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY, 0));
+        Collider2D[] collider2DArray = Physics2D.OverlapPointAll(worldPosition);
+
+        Crop crop = null;
+        for(int i = 0; i < collider2DArray.Length; i++)
+        {
+            Vector2Int position = new Vector2Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY);
+            
+            crop = collider2DArray[i].gameObject.GetComponentInParent<Crop>();
+            if (crop != null && crop.cropGridPosition == position) break;
+
+            crop = collider2DArray[i].gameObject.GetComponentInChildren<Crop>();
+            if (crop != null && crop.cropGridPosition == position) break;
+        }
+
+        return crop;
+    }
+
+    public CropDetails GetCropDetails(int seedItemCode)
+    {
+        return so_CropDetailsList.GetCropDetails(seedItemCode);
+
     }
 
     private void OnEnable()
@@ -142,22 +169,27 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
     {
         ClearDisplayGridPropertyDetails();
 
-        //water每日一清空，需要更新所有scene的grid信息，不单单当前scene的
-        foreach(var gridProperties in so_GridPropertiesArray)
+        //water每日一清，农作物也跟随时间变化，需要更新所有scene的grid信息，不单单当前scene的
+        foreach (var gridProperties in so_GridPropertiesArray)
         {
             if (GameObjectSave.sceneData.TryGetValue(gridProperties.SceneName.ToString(), out SceneSave sceneSave))
             {
-                if(sceneSave.gridPropertyDetailsDictionary != null)
+                if (sceneSave.gridPropertyDetailsDictionary != null)
                 {
                     //反向遍历dictionary并修改key对应的value值
                     for (int i = sceneSave.gridPropertyDetailsDictionary.Count - 1; i >= 0; i--)
                     {
                         KeyValuePair<string, GridPropertyDetails> item = sceneSave.gridPropertyDetailsDictionary.ElementAt(i);
                         GridPropertyDetails gridPropertyDetails = item.Value;
-
+                        //水每日清空
                         if (gridPropertyDetails.daysSinceWatered > -1)
                         {
                             gridPropertyDetails.daysSinceWatered = -1;
+                        }
+                        //农作物生长日期+1
+                        if (gridPropertyDetails.growthDays > -1)
+                        {
+                            gridPropertyDetails.growthDays++;
                         }
 
                         SetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY,
@@ -172,6 +204,15 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
 
     private void AfterSceneLoaded()
     {
+        if (GameObject.FindGameObjectWithTag(Tags.CropsParentTransform) != null)
+        {
+            cropParentTransform = GameObject.FindGameObjectWithTag(Tags.CropsParentTransform).transform;
+        }
+        else
+        {
+            cropParentTransform = null;
+        }
+
         grid = GameObject.FindObjectOfType<Grid>();
         groundDecoration1 = GameObject.FindGameObjectWithTag(Tags.GroundDecoration1).GetComponent<Tilemap>();
         groundDecoration2 = GameObject.FindGameObjectWithTag(Tags.GroundDecoration2).GetComponent<Tilemap>();
@@ -189,9 +230,9 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
 
     public void ISaveableRestoreScene(string sceneName)
     {
-        if(GameObjectSave.sceneData.TryGetValue(sceneName,out SceneSave sceneSave))
+        if (GameObjectSave.sceneData.TryGetValue(sceneName, out SceneSave sceneSave))
         {
-            if(sceneSave.gridPropertyDetailsDictionary != null)
+            if (sceneSave.gridPropertyDetailsDictionary != null)
             {
                 gridPropertyDictionary = sceneSave.gridPropertyDetailsDictionary;
             }
@@ -214,20 +255,30 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         GameObjectSave.sceneData.Add(sceneName, sceneSave);
     }
 
+    private void ClearDisplayGridPropertyDetails()
+    {
+        ClearDisplayGroundDecoration();
+        ClearDisplayAllPlantedCrops();
+    }
+
     private void ClearDisplayGroundDecoration()
     {
         groundDecoration1.ClearAllTiles();
         groundDecoration2.ClearAllTiles();
     }
 
-    private void ClearDisplayGridPropertyDetails()
+    private void ClearDisplayAllPlantedCrops()
     {
-        ClearDisplayGroundDecoration();
+        Crop[] cropArray = FindObjectsOfType<Crop>();
+        foreach (var crop in cropArray)
+        {
+            Destroy(crop.gameObject);
+        }
     }
 
     public void DisplayDugGround(GridPropertyDetails gridPropertyDetails)
     {
-        if(gridPropertyDetails.daysSinceDug > -1)
+        if (gridPropertyDetails.daysSinceDug > -1)
         {
             ConnectDugGround(gridPropertyDetails);
         }
@@ -242,7 +293,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         GridPropertyDetails adjacentGridPropertyDetails;
         //up
         adjacentGridPropertyDetails = GetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY + 1);
-        if(adjacentGridPropertyDetails != null &&adjacentGridPropertyDetails.daysSinceDug > -1)
+        if (adjacentGridPropertyDetails != null && adjacentGridPropertyDetails.daysSinceDug > -1)
         {
             Tile dugTile1 = SetDugTile(gridPropertyDetails.gridX, gridPropertyDetails.gridY + 1);
             groundDecoration1.SetTile(new Vector3Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY + 1, 0), dugTile1);
@@ -279,11 +330,11 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         bool rightDug = IsGridSquareDug(gridX + 1, gridY);
 
         #region 获得当前grid对应的Dug贴图
-        if(!upDug && !downDug && !leftDug && !rightDug)
+        if (!upDug && !downDug && !leftDug && !rightDug)
         {
             return dugGround[0];
         }
-        else if(!upDug && downDug && !leftDug && rightDug)
+        else if (!upDug && downDug && !leftDug && rightDug)
         {
             return dugGround[1];
         }
@@ -343,7 +394,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         {
             return dugGround[15];
         }
-        else 
+        else
         {
             return null;
         }
@@ -477,11 +528,48 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         #endregion
     }
 
-    //判断grid是否开垦了
-    private bool IsGridSquareDug(int gridX, int gridY)
+    public void DisplayPlantedCrop(GridPropertyDetails gridPropertyDetails)
+    {
+        if (gridPropertyDetails.seedItemCode > -1)
+        {
+            //从crops数据库获得crop details数据
+            CropDetails cropDetails = so_CropDetailsList.GetCropDetails(gridPropertyDetails.seedItemCode);
+            
+            if(cropDetails != null)
+            {
+                GameObject cropPrefab;
+                int growthStages = cropDetails.growthDays.Length;
+                int currentGrowthStage = 0;
+                int daysCounter = cropDetails.totalGrowthDays;
+                //获得当前生长阶段
+                for (int i = growthStages - 1; i >= 0; i--)
+                {
+                    if (gridPropertyDetails.growthDays >= daysCounter)
+                    {
+                        currentGrowthStage = i;
+                        break;
+                    }
+                    daysCounter = daysCounter - cropDetails.growthDays[i];
+                }
+
+                cropPrefab = cropDetails.growthPrefab[currentGrowthStage];
+                Sprite growthSprite = cropDetails.growthSprite[currentGrowthStage];
+                Vector3 worldPosition = groundDecoration2.CellToWorld(new Vector3Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY, 0));
+                worldPosition = new Vector3(worldPosition.x + Settings.gridCellSize / 2, worldPosition.y, worldPosition.z);
+                //实例化当前阶段的农作物
+                GameObject cropInstance = Instantiate(cropPrefab, worldPosition, Quaternion.identity);
+                cropInstance.GetComponentInChildren<SpriteRenderer>().sprite = growthSprite;
+                cropInstance.transform.SetParent(cropParentTransform);
+                cropInstance.GetComponent<Crop>().cropGridPosition = new Vector2Int(gridPropertyDetails.gridX, gridPropertyDetails.gridY);
+            }
+        }
+    }
+
+//判断grid是否开垦了
+private bool IsGridSquareDug(int gridX, int gridY)
     {
         GridPropertyDetails gridPropertyDetails = GetGridPropertyDetails(gridX, gridY);
-        if(gridPropertyDetails == null)
+        if (gridPropertyDetails == null)
         {
             return false;
         }
@@ -493,7 +581,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         {
             return false;
         }
-        
+
     }
 
     //判断grid是否有水了
@@ -516,11 +604,13 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
 
     private void DisplayGridPropertyDetails()
     {
-        foreach(KeyValuePair<string,GridPropertyDetails> item in gridPropertyDictionary)
+        foreach (KeyValuePair<string, GridPropertyDetails> item in gridPropertyDictionary)
         {
             GridPropertyDetails propertyDetails = item.Value;
             DisplayDugGround(propertyDetails);
             DisplayWaterGround(propertyDetails);
+            DisplayPlantedCrop(propertyDetails);
         }
     }
+
 }

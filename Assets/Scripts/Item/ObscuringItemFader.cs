@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 //自动将所需的组件添加为依赖项，无需手动添加
 [RequireComponent(typeof(SpriteRenderer))]
 
-public class ObscurantItemFolder : MonoBehaviour
+public class ObscuringItemFader : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     
