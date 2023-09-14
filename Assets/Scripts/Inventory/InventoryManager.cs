@@ -72,11 +72,6 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
         AddItem(location, item);
         //增加item后，销毁screne上的item
         Destroy(deleteGameObject);
-        //foreach(InventoryItem i in inventoryLists[0])
-        //{
-        //    int index = inventoryLists[0].IndexOf(i);
-        //    Debug.Log(GetItemDetails(inventoryLists[0][index].itemCode).itemDescription + " " + inventoryLists[0][index].itemQuantity);
-        //}
     }
 
     //Add item到List里

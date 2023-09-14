@@ -10,6 +10,7 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
     private Tilemap groundDecoration2;
     private Transform cropParentTransform;
     private Grid grid;
+    private bool isFirstTimeSceneLoad = true;
     //key是grid的坐标
     private Dictionary<string, GridPropertyDetails> gridPropertyDictionary;
     [SerializeField] private SO_CropDetailsList so_CropDetailsList = null;
@@ -36,6 +37,10 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         InitialiseGridProperties();
     }
 
+    /// <summary>
+    /// 从SO_GridProperties资源中获取Dictionary所需的value并初始化
+    /// 存储每一个scene的SceneData到GameObjectSave
+    /// </summary>
     private void InitialiseGridProperties()
     {
         foreach (var properties in so_GridPropertiesArray)
@@ -84,6 +89,11 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
             {
                 this.gridPropertyDictionary = gridPropertyDictionary;
             }
+            //添加boolDiction第一个值并设为true
+            sceneSave.boolDictionary = new Dictionary<string, bool>();
+            sceneSave.boolDictionary.Add("isFirstTimeSceneLoaded", true);
+            
+
             //把scenesave保存到gameobjectsave中
             GameObjectSave.sceneData.Add(properties.SceneName.ToString(), sceneSave);
         }
@@ -227,7 +237,10 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
     {
         SaveLoadManager.Instance.iSaveableObjectList.Add(this);
     }
-
+    /// <summary>
+    /// 载入场景，把sceneSave从GameObjectSave中获取
+    /// </summary>
+    /// <param name="sceneName"></param>
     public void ISaveableRestoreScene(string sceneName)
     {
         if (GameObjectSave.sceneData.TryGetValue(sceneName, out SceneSave sceneSave))
@@ -236,21 +249,41 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
             {
                 gridPropertyDictionary = sceneSave.gridPropertyDetailsDictionary;
             }
+            //获取boolDictionary中firsttimesceneloaded的值，如果初始化了就会有这个值
+            if (sceneSave.boolDictionary != null && sceneSave.boolDictionary.TryGetValue("isFirstTimeSceneLoaded", out bool storedIsFirstTimeSceneLoaded))
+            {
+                isFirstTimeSceneLoad = storedIsFirstTimeSceneLoaded;
+            }
+            if (isFirstTimeSceneLoad)
+            {
+                EventHandler.CallInstantiateCropPrefabsEvent();
+            }
 
             if (gridPropertyDictionary.Count > 0)
             {
                 ClearDisplayGridPropertyDetails();
                 DisplayGridPropertyDetails();
             }
+
+            if (isFirstTimeSceneLoad)
+            {
+                isFirstTimeSceneLoad = false;
+            }
         }
     }
-
+    /// <summary>
+    /// 保存场景，把sceneSave添加到GameObjectSave中
+    /// </summary>
+    /// <param name="sceneName"></param>
     public void ISaveableStoreScene(string sceneName)
     {
         GameObjectSave.sceneData.Remove(sceneName);
 
         SceneSave sceneSave = new SceneSave();
         sceneSave.gridPropertyDetailsDictionary = gridPropertyDictionary;
+
+        sceneSave.boolDictionary = new Dictionary<string, bool>();
+        sceneSave.boolDictionary.Add("isFirstTimeSceneLoaded", isFirstTimeSceneLoad);
 
         GameObjectSave.sceneData.Add(sceneName, sceneSave);
     }

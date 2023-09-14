@@ -14,6 +14,7 @@ public delegate void MovementDelegate(float inputX, float inputY, bool isWalking
 public static class EventHandler
 {
     public static event Action RemoveSelectedItemFromInventoryEvent;
+    //把已选的物品从仓库移除
     public static void CallRemoveSelectedItemFromInventoryEvent()
     {
         if (RemoveSelectedItemFromInventoryEvent != null)
@@ -24,6 +25,7 @@ public static class EventHandler
     }
 
     public static event Action<Vector3, HarvestActionEffect> HarvestActionEffectEvent;
+    //收获农作物动作特效
     public static void CallHarvestActionEffectEvent(Vector3 effectPosition, HarvestActionEffect harvestActionEffect)
     {
         if(HarvestActionEffectEvent != null)
@@ -33,6 +35,7 @@ public static class EventHandler
     }
 
     public static event Action DropSelectedItemEvent;
+    //拖拽选择的物品
     public static void CallDropSelectedItemEvent()
     {
         if(DropSelectedItemEvent != null)
@@ -175,6 +178,16 @@ public static class EventHandler
         if (AfterSceneLoadFadeInEvent != null)
         {
             AfterSceneLoadFadeInEvent();
+        }
+    }
+
+    public static event Action InstantiateCropPrefabsEvent;
+    //初始化地图上的农作物
+    public static void CallInstantiateCropPrefabsEvent()
+    {
+        if (InstantiateCropPrefabsEvent != null)
+        {
+            InstantiateCropPrefabsEvent();
         }
     }
 }

@@ -73,15 +73,24 @@ public class Crop : MonoBehaviour
         gridPropertyDetails.growthDays = -1;
         gridPropertyDetails.daysSinceLastHarvest = -1;
         gridPropertyDetails.daysSinceWatered = -1;
+        GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY, gridPropertyDetails);
 
         //收获动画播放前隐藏地里的农作物
         if (cropDetails.hideCropBeforeHarvestedAnimation)
         {
             GetComponentInChildren<SpriteRenderer>().enabled = false;
         }
+        //收获动画播放前关掉碰撞器
+        if (cropDetails.disableCropCollidersBeforeHarvestedAnimation)
+        {
+            Collider2D[] collider2Ds = GetComponentsInChildren<Collider2D>();
+            foreach(var collider2D in collider2Ds)
+            {
+                collider2D.enabled = false;
+            }
 
-        GridPropertiesManager.Instance.SetGridPropertyDetails(gridPropertyDetails.gridX, gridPropertyDetails.gridY, gridPropertyDetails);
-        
+        }
+        //播放收获动画
         if(cropDetails.isHarvestedAnimation && animator != null)
         {
             StartCoroutine(ProcessHarvestActionsAfterAnimaiton(cropDetails, gridPropertyDetails, animator));

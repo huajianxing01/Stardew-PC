@@ -20,6 +20,9 @@ public class SceneControllerManager : SingletonMonobehaviour<SceneControllerMana
         yield return StartCoroutine(LoadSceneAndSetActive(startingSceneName.ToString()));
         
         EventHandler.CallAfterSceneLoadEvent();
+        //如果场景加载时有数据要加载，需调用一次，否则不会加载相关数据
+        SaveLoadManager.Instance.RestoreCurrentSceneData();
+
         StartCoroutine(Fade(0f));
         
     }

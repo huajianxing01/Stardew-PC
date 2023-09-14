@@ -437,6 +437,11 @@ public class Player : SingletonMonobehaviour<Player>
                 }
                 break;
             case ItemType.Breaking_tool:
+                if (gridCursor.CursorPositionIsValid)
+                {
+                    BreakInPlayerDirection(gridPropertyDetails, itemDetails, playerDirection);
+                }
+                break;
             default:
                 break;
         }
@@ -489,6 +494,11 @@ public class Player : SingletonMonobehaviour<Player>
     private void ChopInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerDirection)
     {
         StartCoroutine(ChopInPlayerDirectionRoutine(playerDirection, gridPropertyDetails, itemDetails));
+    }
+
+    private void BreakInPlayerDirection(GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails, Vector3Int playerDirection)
+    {
+        StartCoroutine(BreakInPlayerDirectionRoutine(playerDirection, gridPropertyDetails, itemDetails));
     }
 
     private IEnumerator HoeGroundAtCursorRoutine(Vector3Int playerDirection, GridPropertyDetails gridPropertyDetails)
@@ -676,6 +686,27 @@ public class Player : SingletonMonobehaviour<Player>
         playerToolUseDisabled = false;
     }
 
+    private IEnumerator BreakInPlayerDirectionRoutine(Vector3Int playerDirection, GridPropertyDetails gridPropertyDetails, ItemDetails itemDetails)
+    {
+        PlayerInputIsDisabled = true;
+        playerToolUseDisabled = true;
+
+        //set Break animation
+        toolCharacterAttribute.partVariantType = PartVariantType.pickaxe;
+        characterAttributesCustomisationList.Clear();
+        characterAttributesCustomisationList.Add(toolCharacterAttribute);
+        animationOverrides.ApplyCharacterCustomisationParameters(characterAttributesCustomisationList);
+
+        ProcessCropWithEquippedItemInPlayerDirection(playerDirection, itemDetails, gridPropertyDetails);
+
+        yield return useToolAnimationPause;
+
+        yield return afterUseToolAnimationPause;
+
+        PlayerInputIsDisabled = false;
+        playerToolUseDisabled = false;
+    }
+
     private void ProcessCropWithEquippedItemInPlayerDirection(Vector3Int playerDirection, ItemDetails equippedItemDetails, GridPropertyDetails gridPropertyDetails)
     {
         switch (equippedItemDetails.itemType)
@@ -698,6 +729,7 @@ public class Player : SingletonMonobehaviour<Player>
                     isPickingDown = true;
                 }
                 break;
+            case ItemType.Breaking_tool:
             case ItemType.Chopping_tool:
                 if(playerDirection == Vector3Int.right)
                 {
@@ -715,7 +747,7 @@ public class Player : SingletonMonobehaviour<Player>
                 {
                     isUsingToolDown = true;
                 }
-                break;
+                break;    
             case ItemType.none:
             default:
                 break;
@@ -729,6 +761,7 @@ public class Player : SingletonMonobehaviour<Player>
                 case ItemType.Collecting_tool:
                     crop.ProcessToolAction(equippedItemDetails, isPickingRight, isPickingLeft, isPickingUp, isPickingDown);
                     break;
+                case ItemType.Breaking_tool:
                 case ItemType.Chopping_tool:
                     crop.ProcessToolAction(equippedItemDetails, isUsingToolRight, isUsingToolLeft, isUsingToolUp, isUsingToolDown);
                     break;

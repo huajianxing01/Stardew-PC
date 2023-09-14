@@ -7,7 +7,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 {
     private Camera mainCamera;
     private Transform parentItem;
-    private GameObject draggedItem;
+    public GameObject draggedItem;
     private Canvas parentCanvas;
 
     private GridCursor gridCursor;
@@ -187,7 +187,7 @@ public class UIInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     //清除物品槽高亮，设为未选状态
-    private void ClearSelectedItem()
+    public void ClearSelectedItem()
     {
         inventoryBar.ClearHighlightOnInventorySlots();
 
