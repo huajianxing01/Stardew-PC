@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 //创建一个游戏库存管理者，管理游戏所有Item的信息
-public class InventoryManager : SingletonMonobehaviour<InventoryManager>
+public class InventoryManager : SingletonMonobehaviour<InventoryManager>,ISaveable
 {
+    private UIInventoryBar inventoryBar;
     private Dictionary<int, ItemDetails> itemDetailsDictionary;
     public List<InventoryItem>[] inventoryLists;
     //select数组index对应inventoryLists[x]的索引，value是itemCode
@@ -12,6 +12,12 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
     //数组index是列表inventoryLists的索引，value是容量
     [HideInInspector] public int[] inventoryListCapacityIntArray;
     [SerializeField] private SO_ItemList itemList = null;
+
+    private string _iSaveableUniqueID;
+    public string ISaveableUniqueID { get => _iSaveableUniqueID; set => _iSaveableUniqueID = value; }
+
+    private GameObjectSave _gameObjectSave;
+    public GameObjectSave GameObjectSave { get => _gameObjectSave; set => _gameObjectSave = value; }
 
     protected override void Awake()
     {
@@ -27,6 +33,24 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
         {
             selectInventoryItem[i] = -1;
         }
+
+        ISaveableUniqueID = GetComponent<GenerateGUID>().GUID;
+        GameObjectSave = new GameObjectSave();
+    }
+
+    private void Start()
+    {
+        inventoryBar = FindObjectOfType<UIInventoryBar>();
+    }
+
+    private void OnEnable()
+    {
+        ISaveableRegister();
+    }
+
+    private void OnDisable()
+    {
+        ISaveableDeregister();
     }
 
     private void CreateInventoryLists()
@@ -260,6 +284,67 @@ public class InventoryManager : SingletonMonobehaviour<InventoryManager>
         else
         {
             return GetItemDetails(itemCode);
+        }
+    }
+
+    public void ISaveableRegister()
+    {
+        SaveLoadManager.Instance.iSaveableObjectList.Add(this);
+    }
+
+    public void ISaveableDeregister()
+    {
+        SaveLoadManager.Instance.iSaveableObjectList.Remove(this);
+    }
+
+    public void ISaveableStoreScene(string sceneName)
+    {
+        //无
+    }
+
+    public void ISaveableRestoreScene(string sceneName)
+    {
+        //无
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        GameObjectSave.sceneData.Remove(Settings.persistentScene);
+        
+        SceneSave sceneSave = new SceneSave();
+        sceneSave.listInventoryItemArray = inventoryLists;
+        sceneSave.intArrayDictionary = new Dictionary<string, int[]>();
+        sceneSave.intArrayDictionary.Add("inventoryListCapacityArray", inventoryListCapacityIntArray);
+        GameObjectSave.sceneData.Add(Settings.persistentScene,sceneSave);
+
+        return GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if(gameSave.GameData.TryGetValue(ISaveableUniqueID, out GameObjectSave gameObjectSave))
+        {
+            GameObjectSave = gameObjectSave;
+            if (gameObjectSave.sceneData.TryGetValue(Settings.persistentScene, out SceneSave sceneSave))
+            {
+                if(sceneSave.listInventoryItemArray != null)
+                {
+                    inventoryLists = sceneSave.listInventoryItemArray;
+                    for(int i = 0; i < (int)InventoryLocation.count; i++)
+                    {
+                        EventHandler.CallInventoryUpdatedEvent((InventoryLocation)i, inventoryLists[i]);
+                    }
+                    //清除carry的物体和Bar的高亮状态
+                    Player.Instance.ClearCarriedItem();
+                    inventoryBar.ClearHighlightOnInventorySlots();
+                }
+
+                if (sceneSave.intArrayDictionary != null && sceneSave.intArrayDictionary.TryGetValue("inventoryListCapacityArray",
+                    out int[] inventoryCapacityArray))
+                {
+                    inventoryListCapacityIntArray = inventoryCapacityArray;
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : SingletonMonobehaviour<UIManager>
@@ -57,8 +58,9 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         HighlightButtonForSelectedTab();
     }
 
-    private void DisablePauseMenu()
+    public void DisablePauseMenu()
     {
+        //拖拽时按esc退出则取消当前拖拽效果
         pauseMenuInventoryManagement.DestroyCurrentDraggedItems();
         
         PauseMenuOn = false;
@@ -110,5 +112,20 @@ public class UIManager : SingletonMonobehaviour<UIManager>
         ColorBlock colors = button.colors;
         colors.normalColor = colors.pressedColor;
         button.colors = colors;
+    }
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+    /// <summary>
+    /// 重开游戏
+    /// </summary>
+    public void RestartGame()
+    {
+        SceneControllerManager.Instance.Restart();
+        DisablePauseMenu();
     }
 }

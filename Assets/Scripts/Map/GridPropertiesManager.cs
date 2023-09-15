@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(GenerateGUID))]
 public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManager>, ISaveable
@@ -286,6 +287,23 @@ public class GridPropertiesManager : SingletonMonobehaviour<GridPropertiesManage
         sceneSave.boolDictionary.Add("isFirstTimeSceneLoaded", isFirstTimeSceneLoad);
 
         GameObjectSave.sceneData.Add(sceneName, sceneSave);
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        //存储当前激活的场景数据
+        ISaveableStoreScene(SceneManager.GetActiveScene().name);
+        return GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (gameSave.GameData.TryGetValue(ISaveableUniqueID, out GameObjectSave gameObjectSave))
+        {
+            GameObjectSave = gameObjectSave;
+            //载入当前激活的场景数据
+            ISaveableRestoreScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     private void ClearDisplayGridPropertyDetails()
@@ -645,5 +663,4 @@ private bool IsGridSquareDug(int gridX, int gridY)
             DisplayPlantedCrop(propertyDetails);
         }
     }
-
 }

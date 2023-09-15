@@ -91,4 +91,32 @@ public class SceneControllerManager : SingletonMonobehaviour<SceneControllerMana
         //激活加载的新场景
         SceneManager.SetActiveScene(newLoadScene);
     }
+
+    public void Restart()
+    {
+        if (!isFading)
+        {
+            //重置状态前需停止当前脚本所有协程，不停止总有协程相关报错
+            StopAllCoroutines();
+            StartCoroutine(RestartScenes());
+        }
+    }
+
+    private IEnumerator RestartScenes()
+    {
+        EventHandler.CallBeforeSceneUnloadFadeOutEvent();
+        yield return StartCoroutine(Fade(1f));
+        //重开不需要保存游戏数据
+        EventHandler.CallBeforeSceneUnloadEvent();
+        yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        yield return SceneManager.LoadSceneAsync(0);
+        Scene newLoadScene = SceneManager.GetSceneAt(0);
+        SceneManager.SetActiveScene(newLoadScene);
+
+        EventHandler.CallAfterSceneLoadEvent();
+        SaveLoadManager.Instance.RestoreCurrentSceneData();
+
+        yield return StartCoroutine(Fade(0f));
+        EventHandler.CallAfterSceneLoadFadeInEvent();
+    }
 }

@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Player : SingletonMonobehaviour<Player>
+public class Player : SingletonMonobehaviour<Player>,ISaveable
 {
     private WaitForSeconds useToolAnimationPause;
     private WaitForSeconds afterUseToolAnimationPause;
@@ -60,16 +62,22 @@ public class Player : SingletonMonobehaviour<Player>
     private CharacterAttribute armsCharacterAttribute;
     private CharacterAttribute toolCharacterAttribute;
 
-    private bool _playerInputIsDisabled = false;
-
     public GameObject canyonOakTreePrefab;
 
     //_playerInputIsDisabled的属性，其他类可以通过属性获得字段的信息
+    private bool _playerInputIsDisabled = false;
     public bool PlayerInputIsDisabled { get => _playerInputIsDisabled; set => _playerInputIsDisabled = value; }
+
+    private string _iSaveableUniqueID;
+    public string ISaveableUniqueID { get => _iSaveableUniqueID; set => _iSaveableUniqueID = value; }
+
+    private GameObjectSave _gameObjectSave;
+    public GameObjectSave GameObjectSave { get => _gameObjectSave; set => _gameObjectSave = value; }
 
     protected override void Awake()
     {
         base.Awake();
+        mainCamera = Camera.main;
         rigidbody2 = GetComponent<Rigidbody2D>();
 
         animationOverrides = GetComponentInChildren<AnimationOverrides>();
@@ -79,7 +87,8 @@ public class Player : SingletonMonobehaviour<Player>
         
         characterAttributesCustomisationList = new List<CharacterAttribute>();
 
-        mainCamera = Camera.main;
+        ISaveableUniqueID = GetComponent<GenerateGUID>().GUID;
+        GameObjectSave = new GameObjectSave();
     }
 
     private void Start()
@@ -126,12 +135,16 @@ public class Player : SingletonMonobehaviour<Player>
 
     private void OnEnable()
     {
+        ISaveableRegister();
+
         EventHandler.BeforeSceneUnloadFadeOutEvent += DisablePlayerInputAndRestMovement;
         EventHandler.AfterSceneLoadEvent += EnablePlayerInput;
     }
 
     private void OnDisable()
     {
+        ISaveableDeregister();
+
         EventHandler.BeforeSceneUnloadFadeOutEvent -= DisablePlayerInputAndRestMovement;
         EventHandler.AfterSceneLoadEvent -= EnablePlayerInput;
     }
@@ -817,6 +830,105 @@ public class Player : SingletonMonobehaviour<Player>
             GameObject tree = PoolManager.Instance.ReuseObject(canyonOakTreePrefab, mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                 Input.mousePosition.y, -mainCamera.transform.position.z)), Quaternion.identity);
             tree.SetActive(tree);
+        }
+    }
+
+    public void ISaveableRegister()
+    {
+        SaveLoadManager.Instance.iSaveableObjectList.Add(this);
+    }
+
+    public void ISaveableDeregister()
+    {
+        SaveLoadManager.Instance.iSaveableObjectList.Remove(this);
+    }
+
+    public void ISaveableStoreScene(string sceneName)
+    {
+        //玩家在持续场景下，不需要存储scene
+    }
+
+    public void ISaveableRestoreScene(string sceneName)
+    {
+        //玩家在持续场景下，不需要存储scene
+    }
+
+    public GameObjectSave ISaveableSave()
+    {
+        //存储之前删除对应旧的数据，避免数据出问题
+        GameObjectSave.sceneData.Remove(Settings.persistentScene);
+        
+        SceneSave sceneSave = new SceneSave();
+        sceneSave.vector3Dictionary = new Dictionary<string, Vector3Serializable>();
+        sceneSave.stringDictionary = new Dictionary<string, string>();
+        Vector3Serializable vector3Serializable = new Vector3Serializable(transform.position.x, transform.position.y, transform.position.z);
+        
+        sceneSave.vector3Dictionary.Add("playerPosition", vector3Serializable);
+        sceneSave.stringDictionary.Add("currentScene", SceneManager.GetActiveScene().name);
+        sceneSave.stringDictionary.Add("playerDirection", playerDirection.ToString());
+        GameObjectSave.sceneData.Add(Settings.persistentScene, sceneSave);
+
+        return GameObjectSave;
+    }
+
+    public void ISaveableLoad(GameSave gameSave)
+    {
+        if (gameSave.GameData.TryGetValue(ISaveableUniqueID, out GameObjectSave gameObjectSave)) 
+        {
+            if (gameObjectSave.sceneData.TryGetValue(Settings.persistentScene, out SceneSave sceneSave))
+            {
+                if (sceneSave.vector3Dictionary != null && sceneSave.vector3Dictionary.TryGetValue("playerPosition",
+                    out Vector3Serializable playerPosition))
+                {
+                    transform.position = new Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
+                }
+                if(sceneSave.stringDictionary != null)
+                {
+                    if (sceneSave.stringDictionary.TryGetValue("currentScene", out string currentScene))
+                    {
+                        SceneControllerManager.Instance.FadeAndLoadScene(currentScene, transform.position);
+                    }
+                    if(sceneSave.stringDictionary.TryGetValue("playerDirection", out string playerDir))
+                    {
+                        bool tmp = Enum.TryParse<Direction>(playerDir, true, out Direction direction);
+                        if (tmp)
+                        {
+                            playerDirection = direction;
+                            SetPlayerDirection(playerDirection);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void SetPlayerDirection(Direction playerDirection)
+    {
+        switch (playerDirection)
+        {
+            case Direction.up:
+                //设为向上发呆状态
+                EventHandler.CallMovementEvent(0, 0, false, false, false, false, ToolEffect.none, false, false, false, false,
+                    false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false);
+                break;
+            case Direction.down:
+                EventHandler.CallMovementEvent(0, 0, false, false, false, false, ToolEffect.none, false, false, false, false,
+                    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
+                break;
+            case Direction.left:
+                EventHandler.CallMovementEvent(0, 0, false, false, false, false, ToolEffect.none, false, false, false, false,
+                    false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false);
+                break;
+            case Direction.right:
+                EventHandler.CallMovementEvent(0, 0, false, false, false, false, ToolEffect.none, false, false, false, false,
+                    false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false);
+                break;
+            default:
+                //默认向下发呆状态
+                EventHandler.CallMovementEvent(0, 0, false, false, false, false, ToolEffect.none, false, false, false, false,
+                    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
+                break;
         }
     }
 }

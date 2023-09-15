@@ -2,6 +2,9 @@ using UnityEngine;
 
 public static class Settings
 {
+    //scene
+    public const string persistentScene = "PersistentScene";
+
     //Obscuring Item Fading
     public const float fadeInSeconds = 0.25f;
     public const float fadeOutSeconds = 0.35f;

@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
-using System;
 
 [ExecuteAlways]
 public class TilemapGridPreoperties : MonoBehaviour
 {
+    //只在unity编辑器中才编译，与独立构建体分离
+#if UNITY_EDITOR
     private Tilemap tilemap;
     [SerializeField] private SO_GridProperties gridProperties = null;
     [SerializeField] private GridBoolProperty gridBoolProperty = GridBoolProperty.diggable;
@@ -29,7 +30,7 @@ public class TilemapGridPreoperties : MonoBehaviour
             UpdateGridProperties();
             if(gridProperties != null)
             {
-                //
+                //将目标对象标记为“脏”（仅适用于非场景对象）
                 EditorUtility.SetDirty(gridProperties);
             }
         }
@@ -70,4 +71,5 @@ public class TilemapGridPreoperties : MonoBehaviour
             Debug.Log("禁止Tilemap属性");
         }
     }
+#endif
 }
