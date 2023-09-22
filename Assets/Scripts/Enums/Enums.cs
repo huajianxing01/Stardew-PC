@@ -149,3 +149,45 @@ public enum HarvestActionEffect
     breakingStone,//碎石头
     none
 }
+
+public enum Facing
+{
+    none,
+    front,
+    back,
+    right
+}
+
+public enum Weather
+{
+    dry,
+    raining,
+    snowing,
+    none,
+    count
+}
+
+public enum SoundName
+{
+    none = 0,
+    effectFoodtstepSoftGround = 10,
+    effectFoodtstepHardGround = 20,
+    effectAxe = 30,
+    effectPickaxe = 40,
+    effectScythe = 50,
+    effectHoe = 60,
+    effectWateringCan = 70,
+    effectBasket = 80,
+    effectPickupSound = 90,
+    effectRustle = 100,
+    effectTreeFalling = 110,
+    effectPlantingSound = 120,
+    effectPluck = 130,//采摘
+    effectStoneShatter = 140,
+    effectWoodSplinters = 150,
+    ambientCountryside1 = 1000,//乡村-环境音
+    ambientCountryside2 = 1010,
+    ambientIndoors1 = 1020,
+    musicCalm3 = 2000,//风平浪静
+    musicCalm1 = 2010
+}

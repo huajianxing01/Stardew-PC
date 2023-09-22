@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class GameManager : SingletonMonobehaviour<GameManager>
 {
+    public Weather currentWeather;
+
     protected override void Awake()
     {
         base.Awake();

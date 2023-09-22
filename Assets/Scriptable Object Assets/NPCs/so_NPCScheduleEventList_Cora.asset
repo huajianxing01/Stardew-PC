@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb53d66abe00ba640a564c15c18811a8, type: 3}
+  m_Name: so_NPCScheduleEventList_Cora
+  m_EditorClassIdentifier: 
+  npcScheduleEventList:
+  - minute: 45
+    hour: 6
+    day: 0
+    weather: 3
+    season: 4
+    priority: 3
+    toSceneName: 0
+    toGridCoordinate:
+      x: 4
+      y: 3
+    npcFacingDirectionAtDestination: 1
+    animationAtDestination: {fileID: 7400000, guid: f5345964c3b17164d9d10e7a676083f2, type: 2}
+  - minute: 0
+    hour: 8
+    day: 0
+    weather: 3
+    season: 4
+    priority: 2
+    toSceneName: 0
+    toGridCoordinate:
+      x: 14
+      y: 0
+    npcFacingDirectionAtDestination: 3
+    animationAtDestination: {fileID: 7400000, guid: 547c1ed0bdeb10044beaf1c384be3a23, type: 2}
+  - minute: 0
+    hour: 8
+    day: 0
+    weather: 1
+    season: 4
+    priority: 0
+    toSceneName: 2
+    toGridCoordinate:
+      x: 4
+      y: 1
+    npcFacingDirectionAtDestination: 2
+    animationAtDestination: {fileID: 7400000, guid: 022dafbb2090386488c2f1beaf453580, type: 2}
+  - minute: 0
+    hour: 10
+    day: 0
+    weather: 3
+    season: 4
+    priority: 2
+    toSceneName: 0
+    toGridCoordinate:
+      x: 28
+      y: -15
+    npcFacingDirectionAtDestination: 3
+    animationAtDestination: {fileID: 7400000, guid: 547c1ed0bdeb10044beaf1c384be3a23, type: 2}
+  - minute: 30
+    hour: 16
+    day: 0
+    weather: 3
+    season: 4
+    priority: 3
+    toSceneName: 2
+    toGridCoordinate:
+      x: 4
+      y: 3
+    npcFacingDirectionAtDestination: 1
+    animationAtDestination: {fileID: 7400000, guid: f5345964c3b17164d9d10e7a676083f2, type: 2}
+  - minute: 30
+    hour: 13
+    day: 0
+    weather: 3
+    season: 4
+    priority: 2
+    toSceneName: 1
+    toGridCoordinate:
+      x: -20
+      y: -20
+    npcFacingDirectionAtDestination: 4
+    animationAtDestination: {fileID: 7400000, guid: 022dafbb2090386488c2f1beaf453580, type: 2}

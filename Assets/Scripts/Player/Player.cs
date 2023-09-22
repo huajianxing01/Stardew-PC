@@ -48,7 +48,7 @@ public class Player : SingletonMonobehaviour<Player>,ISaveable
     private bool isSwingingToolDown;
 
     private Camera mainCamera;
-
+    //加了刚体的物体，不要直接控制transform来移动，用刚体的MovePosition更好
     private Rigidbody2D rigidbody2;
 
     private Direction playerDirection;
@@ -875,7 +875,8 @@ public class Player : SingletonMonobehaviour<Player>,ISaveable
     {
         if (gameSave.GameData.TryGetValue(ISaveableUniqueID, out GameObjectSave gameObjectSave)) 
         {
-            if (gameObjectSave.sceneData.TryGetValue(Settings.persistentScene, out SceneSave sceneSave))
+            GameObjectSave = gameObjectSave;
+            if (GameObjectSave.sceneData.TryGetValue(Settings.persistentScene, out SceneSave sceneSave))
             {
                 if (sceneSave.vector3Dictionary != null && sceneSave.vector3Dictionary.TryGetValue("playerPosition",
                     out Vector3Serializable playerPosition))

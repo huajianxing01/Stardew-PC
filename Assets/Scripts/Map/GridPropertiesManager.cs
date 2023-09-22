@@ -663,4 +663,27 @@ private bool IsGridSquareDug(int gridX, int gridY)
             DisplayPlantedCrop(propertyDetails);
         }
     }
+    /// <summary>
+    /// 根据场景名称获取地图长宽，用于A*算法使用，如果没找到对应场景则设为0
+    /// </summary>
+    /// <returns></returns>
+    public bool GetGridDimensions(SceneName sceneName, out Vector2Int gridDimensions, out Vector2Int gridOrigin)
+    {
+        gridDimensions = Vector2Int.zero;
+        gridOrigin = Vector2Int.zero;
+
+        foreach(var so_gridProperties in so_GridPropertiesArray)
+        {
+            if(so_gridProperties.SceneName == sceneName)
+            {
+                gridDimensions.x = so_gridProperties.gridWidth;
+                gridDimensions.y = so_gridProperties.gridHeight;
+                gridOrigin.x = so_gridProperties.originX;
+                gridOrigin.y = so_gridProperties.originY;
+
+                return true;
+            }
+        }
+        return false;
+    }
 }

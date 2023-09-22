@@ -89,6 +89,6 @@ public class MovementAPControl : MonoBehaviour
 
     private void AnimationEventPlayFootstepSound()
     {
-
+        AudioManager.Instance.PlaySound(SoundName.effectFoodtstepHardGround);
     }
 }

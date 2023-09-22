@@ -153,6 +153,13 @@ public class TimeManager : SingletonMonobehaviour<TimeManager>, ISaveable
         }
     }
 
+    public TimeSpan GetGameTime()
+    {
+        //timespan结构表示一个时间间隔
+        TimeSpan gameTime = new TimeSpan(gameHour, gameMinute, gameSecond);
+        return gameTime;
+    }
+
     public string GetSeasonChineseWord(Season season)
     {
         string seasonTmp;

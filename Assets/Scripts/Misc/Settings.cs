@@ -13,6 +13,9 @@ public static class Settings
     //tilemap
     public const float gridCellSize = 1f;
     public static Vector2 cursorSize = Vector2.one;
+    public static float gridCellDiagonalSize = 1.4f;//unity cell中对角距离是1.4
+    public static int maxGridWidth = 999999;
+    public static int maxGridHeight = 999999;
 
     //player
     public static float playerCenterOffset = 0.875f;
@@ -27,22 +30,7 @@ public static class Settings
     public static float pickAnimationPause = 1f;
     public static float afterPickAnimationPause = 0.2f;
 
-    //Time system
-    public const float secondsPerGameSecond = 0.012f;
-    public const string spring = "春天";
-    public const string summer = "夏天";
-    public const string autumn = "秋天";
-    public const string winter = "冬天";
-    public const string monday = "周一";
-    public const string tuesday = "周二";
-    public const string wednesday = "周三";
-    public const string thursday = "周四";
-    public const string friday = "周五";
-    public const string saturday = "周六";
-    public const string sunday = "周日";
-
-
-    //玩家仓库容量（背包）
+    //play仓库容量（背包）
     public static int playerInitialInventoryCapacity = 24;
     public static int playerMaxInventoryCapacity = 48;
 
@@ -78,6 +66,30 @@ public static class Settings
     public static int idleLeft;
     public static int idleUp;
     public static int idleDown;
+
+    //NPC movement，NPC移动的距离
+    public static float pixelSize = 0.0625f;
+
+    //存储NPC的animation参数
+    public static int npcWalkUp;
+    public static int npcWalkDown;
+    public static int npcWalkLeft;
+    public static int npcWalkRight;
+    public static int npcEventAnimation;
+
+    //Time system
+    public const float secondsPerGameSecond = 0.012f;
+    public const string spring = "春天";
+    public const string summer = "夏天";
+    public const string autumn = "秋天";
+    public const string winter = "冬天";
+    public const string monday = "周一";
+    public const string tuesday = "周二";
+    public const string wednesday = "周三";
+    public const string thursday = "周四";
+    public const string friday = "周五";
+    public const string saturday = "周六";
+    public const string sunday = "周日";
 
     //工具称呼
     public const string HoeingTool = "锄地工具";
@@ -126,7 +138,14 @@ public static class Settings
         isSwingingToolLeft = Animator.StringToHash("isSwingingToolLeft");
         isSwingingToolUp = Animator.StringToHash("isSwingingToolUp");
         isSwingingToolDown = Animator.StringToHash("isSwingingToolDown");
-        
+
+        //npc
+        npcWalkUp = Animator.StringToHash("npcWalkUp");
+        npcWalkDown = Animator.StringToHash("npcWalkDown");
+        npcWalkLeft = Animator.StringToHash("npcWalkLeft");
+        npcWalkRight = Animator.StringToHash("npcWalkRight");
+        npcEventAnimation = Animator.StringToHash("npcEventAnimation");
+
         //共享的Animation的参数ID名
         idleRight = Animator.StringToHash("idleRight");
         idleLeft = Animator.StringToHash("idleLeft");
